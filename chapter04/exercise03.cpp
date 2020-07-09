@@ -4,8 +4,6 @@ int main()
 {
     //read doubles into vector
     vector <double> vec {};
-
-    
     double value {0};
     while(std::cin >> value)
     {
@@ -41,6 +39,11 @@ int main()
         }
     }
     std::cout << "max: " << max << " min: " << min << std::endl;
+
+    //calculate the means
+    double means = sum / vec.size();
+    std::cout << "means of all entries: " << means << std::endl;
+    
 
     return 0;
 }
