@@ -26,15 +26,19 @@ bool is_prime ( int num )
 
 int main()
 {
-    vector <int> hundred {}; //contains everything from 2 - 100
-    for ( int i = 2; i <= 100; ++i)
+    vector <int> vec {}; //contains everything from 2 - input_num
+    int input_num {0};
+    std::cout << "input your number: ";
+    std::cin >> input_num;
+    std::cout << std::endl;
+    for ( int i = 2; i <= input_num; ++i)
     {
-        hundred.push_back(i);
+        vec.push_back(i);
     }
-    print_intvec(hundred);
+    print_intvec(vec);
 
     vector <int> primes {};
-    for ( int i : hundred)
+    for ( int i : vec)
     {
         if ( is_prime(i) )
         {
