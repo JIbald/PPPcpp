@@ -9,6 +9,7 @@ void print_intvec ( vector <int> vec )
     std::cout << std::endl << std::endl;
 }
 
+//unsure if this function can be faulty
 bool is_prime ( int num )
 {
     for ( int i = 2; i < num; ++i )
