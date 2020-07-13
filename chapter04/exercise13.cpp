@@ -1,7 +1,15 @@
 #include "../std_lib_facilities.h"
 
-//same as exercise13.cpp
+//this might not be the smartest and most efficient way, since when using the debug lines in the prime_eratosthenes() function you will see,
+//that sometimes the code would not alter the vector, thus resulting in redundant computing cycles.
+//However, this is my personal solution and I prefer showing this one instead of those found countless numbers of times on the internet,
+//which defeat the learning process for me. So if by some chance you end up with the same or similar solution which might still have some small, undetected error,
+//you do not get discouraged.
 
+//returns a vector with all primes from 1 to num
+//commented lines can be used for debugging or in my case understand the sieve of Eratosthenes
+//also, I accidentally wrote this, so it would take ANY input from the user, since all resources I read on the sieve of Eratosthenes
+//would determine all prime numbers smaller than a number 'n'.
 vector <int> prime_eratosthenes (int num)
 {
     vector <int> vec;
