@@ -4,7 +4,14 @@ int main()
 {
     try
     {
-        //snippet
+        //snippet start
+        int i = 0;
+        while ( i < 10 )
+        {
+            ++i
+        }
+        //snippet end
+
         keep_window_open();
         return 0;
     }
