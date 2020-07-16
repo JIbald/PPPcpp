@@ -1,8 +1,9 @@
 #include "../std_lib_facilities.h"
 
-//(x°C × 9/5) + 32
 double ctof (double celsius)
 {
+    //pre condition
+    //checks for argument below absolute zero
     if ( celsius < -273.15 )
     {
         error("ctof() pre-condition");
@@ -10,6 +11,8 @@ double ctof (double celsius)
     
     double fahrenheit {( celsius * 9/5 ) + 32};
 
+    //post condition
+    //checks for return parameter below absolute zero
     if ( fahrenheit < -459.67 )
     {
         error("ctof() post-condition");
@@ -20,6 +23,8 @@ double ctof (double celsius)
 
 double ftoc (double fahrenheit)
 {
+    //pre condition
+    //checks for argument below absolute zero
     if ( fahrenheit < -459.67 )
     {
         error("ftoc() pre-condition");
@@ -27,6 +32,8 @@ double ftoc (double fahrenheit)
 
     double celsius {( fahrenheit - 32 ) * 5/9};
 
+    //post condition
+    //checks for return parameter below absolute zero
     if ( celsius < -273.15 )
     {
         error("ftoc() post-condition");
@@ -36,10 +43,28 @@ double ftoc (double fahrenheit)
 
 int main()
 {
-    double celsius {-273.15};
-    std::cout << "ctof: " << ctof(celsius) << std::endl;
-    double fahrenheit {-459.67};
-    std::cout << "ftoc: " << ftoc(fahrenheit) << std::endl;
+    double temperature {0};
+    char unit {' '};
+    
+    std::cout << "enter temperature, whitespace, unit (Celsius: c / Fahrenheit: f): ";
+    std::cin >> temperature >> unit;
+
+    double conv_temp {0};
+    switch(unit)
+    {
+        case 'c':
+            conv_temp = ctof(temperature);
+            break;
+
+        case 'f':
+            conv_temp = ftoc(temperature);
+            break;
+        
+        default:
+            std::cout << "unknown unit." << std::endl;
+    }
+
+    std::cout << "converted temperature: " << conv_temp << " " << unit << std::endl;
 
     return 0;
 }
