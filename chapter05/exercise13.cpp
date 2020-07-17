@@ -1,0 +1,1 @@
+//check exercise12, I modified it so it will generate random solutions
