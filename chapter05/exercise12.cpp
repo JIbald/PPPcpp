@@ -1,4 +1,4 @@
-#include "std_lib_facilities.h"
+#include "../std_lib_facilities.h"
 #include <stdlib.h>
 #include <time.h>
 
@@ -102,7 +102,7 @@ bulls_cows count_bulls_cows ( vector <int> solution, vector <int> guess )
 }
 
 int main()
-{
+try{   
     std::cout << "welcome to bulls & cows (rules on page 171)" << std::endl;
     std::cout << "first, let's type in a difficulty (10 upwards in increments of 1 is reccomended)" << std::endl;
     int seed {0};
@@ -119,6 +119,7 @@ int main()
         switch(state)
         {
             case '1': //create a vector with 4 unique random numbers based on chosen difficulty
+            {
                 //std::cout << "case 1: " << std::endl;
                 solution = { int_to_vec(amount, seed) };
                 if( same_entry(solution) )
@@ -127,8 +128,9 @@ int main()
                 }
                 state = '2';
                 break;
-
+            }
             case '2': //prompt user to type in his guess and store it in vector
+            {
                 //std::cout << "case 2: " << std::endl;
                 std::cout << "type in four integers (separated by whitespace): ";
                 while(std::cin >> input)
@@ -140,16 +142,18 @@ int main()
                 std::cin.ignore();
                 state = '3';
                 break;
-
+            }
             case '3': // check how many bulls and cows there are, show user
+            {
                 //std::cout << "case 3: " << std::endl;
                 count = count_bulls_cows(solution, guess);
                 std::cout << "bulls: " << count.bulls << std::endl;
                 std::cout << "cows: " << count.cows << std::endl;
                 state = '4';
                 break;
-
+            }
             case '4': //check winning condition
+            {
                 //std::cout << "case 4: " << std::endl;
                 if( count.bulls == amount )
                 {
@@ -160,14 +164,16 @@ int main()
                     state = '5';
                 }
                 break;
-
+            }
             case '5': //reset the guess vector for new input
+            {
                 guess.erase(guess.begin(), guess.end() );
                 //bulls and cows count gets overwritten in case 3
                 state = '2';
                 break;
-
+            }
             case 'w':
+            {
                 std::cout << "Congratulations, you won!" << std::endl;
                 std::cout << "want to play again ? (y/n)" << std::endl;
                 char answer {' '};
@@ -181,17 +187,33 @@ int main()
                     state = 'q';
                 }
                 break;
-
+            }
             case 'q':
-            case 'Q':
+            {
                 std::cout << "Goodbye." << std::endl;
                 run = false;
                 break;
-
+            }
             default:
+            {
                 std::cout << "default: " << std::endl;
+            }
         }
     }
 
     return 0;
+}
+
+catch(const std::exception& e)
+{
+    std::cerr << "error: " << e.what() << '\n';
+    keep_window_open();
+    return 1;
+}
+
+catch(...)
+{
+    std::cerr << "unknown exception." << std::endl;
+    keep_window_open();
+    return 2;
 }
