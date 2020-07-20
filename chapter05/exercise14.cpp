@@ -1,5 +1,5 @@
 #include "../std_lib_facilities.h"
-
+//I guess I cheated with structs again. You could declare these vectors individually as well.
 struct week
 {
     vector <int> mondays {};
