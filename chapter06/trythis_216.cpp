@@ -71,12 +71,66 @@ double expression();
 
 double primary()
 {
-
+    Token t = ts.get();
+    switch (t.kind)
+    {
+        case '(':
+        {
+            double d = expression();
+            t = ts.get();
+            if (t.kind != ')' )
+            {
+                error(" ')' expected" );
+                return d;
+            }
+            break;
+        }
+        case '8':
+        {
+            return t.value;
+            break;
+        }
+        default:
+        {
+            error("primary expected.");
+        }
+    }
 }
 
 double term()
 {
+    double left = primary();
+    Token t = ts.get();
 
+    while (true)
+    {
+        switch(t.kind)
+        {
+            case '*':
+            {
+                left *= primary();
+                t = ts.get();
+                break;
+            }
+            case '/':
+            {
+                double d = primary();
+                if (d == primary() )
+                {
+                    error("Can't divide by zero.");
+                }
+                left /= d;
+                t = ts.get();
+                break;
+            }
+            default:
+            {
+                ts.putback(t);
+                return left;
+            }
+        }
+    }
+    
 }
 
 double expression()
@@ -104,7 +158,20 @@ double expression()
 }
 
 int main()
-{
-
-    return 0;
+try {
+    std::cin.ignore();
+    std::cin.clear();
+    while (cin)
+        cout << "=" << expression() << '\n';
+    keep_window_open("~0");
+}
+catch (exception& e) {
+    cerr << e.what() << endl;
+    keep_window_open ("~1");
+    return 1;
+}
+catch (...) {
+    cerr << "exception \n";
+    keep_window_open ("~2");
+    return 2;
 }
