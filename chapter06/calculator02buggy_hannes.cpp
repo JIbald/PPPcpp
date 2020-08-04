@@ -239,13 +239,13 @@ void print_token_mem(Token t)
 int main()
 try
 {
+    double result {0};
     while (cin) 
     {
         Token t = ts.get();
         std::cout << "MAIN()" << std::endl;
         print_token_mem(t); //DEBUG
 
-        double result {0};
         if (t.kind == 'q') 
         {
             break; // 'q' for quit
