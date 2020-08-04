@@ -1,10 +1,12 @@
 #include "../std_lib_facilities.h"
+#include <iostream>
 
 class Token
 {
 public:
     char kind;
     double value;
+    Token() {};
     Token(char c)
         :kind(c), value(0) { }
     Token(char c, double val)
@@ -16,7 +18,9 @@ class Token_Stream
 public:
     Token get();
     void putback(Token t);
-private:
+    //Token_Stream();
+    //~Token_Stream();
+
     bool full {false};
     Token buffer;
 };
