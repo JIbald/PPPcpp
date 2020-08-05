@@ -37,6 +37,7 @@ public:
     { }
 };
 
+void print_token_mem(Token t);
 //------------------------------------------------------------------------------
 
 class Token_stream 
@@ -86,25 +87,37 @@ Token Token_stream::get()
     char ch;
     cin >> ch;    // note that >> skips whitespace (space, newline, tab, etc.)
 
-    switch (ch) {
-    case ';':    // for "print"
-    case 'x':    // for "quit"
-    case '(': case ')': case '+': case '-': case '*': case '/': 
+    switch (ch) 
     {
-        return Token(ch);        // let each character represent itself //creates Token (kind = ch; value = 0;) // might be error
+        case '=':    // for "print"
+        case 'x':    // for "quit"
+        case '{': case '}': case '(': case ')': case '+': case '-': case '*': case '/': 
+        {
+            Token t_symbol{ ch };
+            //DEBUG LINES
+            std::cout << "GET() symbol case" << std::endl;
+            print_token_mem(t_symbol);
+            return t_symbol;   // let '#' represent "a number"
+        }
+        case '.':
+        case '0': case '1': case '2': case '3': case '4':
+        case '5': case '6': case '7': case '8': case '9':
+        {    
+            cin.putback(ch);         // put digit back into the input stream //from std::istream::putback, not Token_stream::putback
+            double val;
+            cin >> val;              // read a floating-point number
+            Token t_number( '#', val );
+            //DEBUG LINES
+            std::cout << "GET() number case" << std::endl;
+            print_token_mem(t_number);
+            return t_number;   // let '#' represent "a number"
+        }
+        default:
+            std::cout << "GET()" << std::endl;
+            error("Bad token");
+            return Token('R', -1000);
     }
-    case '.':
-    case '0': case '1': case '2': case '3': case '4':
-    case '5': case '6': case '7': case '9':
-    {    
-        cin.putback(ch);         // put digit back into the input stream //from std::istream::putback, not Token_stream::putback
-        double val;
-        cin >> val;              // read a floating-point number
-        return Token('8',val);   // let '8' represent "a number"
-    }
-    default:
-        error("Bad token");
-    }
+    return Token('R', -1000);
 }
 
 //------------------------------------------------------------------------------
@@ -120,23 +133,42 @@ double expression();    // declaration so that primary() can call expression()
 // deal with numbers and parentheses
 double primary()
 {
+    std::cout << "PRIMARY() GET()" << std::endl;
     Token t = ts.get();
+
+    //DEBUG LINES
+    std::cout << "PRIMARY()" << std::endl;
+    print_token_mem(t);
+
     switch (t.kind) {
-    case '(':    // handle '(' expression ')'
-        {    
-            double d = expression();
-            t = ts.get();
-            if (t.kind != ')') 
-            {
-                error("')' expected"); // might need "no expression within parenthesis, empty ()"
-            }
-            return d;
+    case '{':   // handle '{' expression '}'
+    {
+        double d {expression()};
+        t = ts.get();
+        if (t.kind != '}')
+        {
+            error("'}' expected");
         }
-    case '8':            // we use '8' to represent a number
+        return d;
+        
+    }
+    case '(':    // handle '(' expression ')'
+    {    
+        double d = expression();
+        t = ts.get();
+        if (t.kind != ')') 
+        {
+            error("')' expected"); // might need "no expression within parenthesis, empty ()"
+        }
+        return d;
+    }
+    case '#':            // we use '#' to represent a number
         return t.value;  // return the number's value
     default:
         error("primary expected");
+        return -1000;
     }
+    return -1000;
 }
 
 //------------------------------------------------------------------------------
@@ -145,7 +177,12 @@ double primary()
 double term()
 {
     double left = primary();
+    std::cout << "LEFT: " << left << std::endl;
     Token t = ts.get();        // get the next token from token stream
+    
+    //DEBUG LINES
+    std::cout << "TERM()" << std::endl;
+    print_token_mem(t);
 
     while(true) {
         switch (t.kind) {
@@ -154,7 +191,6 @@ double term()
             left *= primary();
             t = ts.get();
             // originally no break
-            //return left; //???????????
             break;
         }
         case '/':
@@ -166,7 +202,7 @@ double term()
             }
             left /= d; 
             t = ts.get();
-            //return left; //???????????
+            //return left; //pretty sure no return here, we check as long as we can't multiply or divide and if not so we put it back to stream and let either expression or primary handle this
             break;
         }
         default: 
@@ -182,7 +218,12 @@ double term()
 double expression()
 {
     double left = term();      // read and evaluate a Term
+    std::cout << "EXPRESSION() GET()" << std::endl;
     Token t = ts.get();        // get the next token from token stream
+    
+    //DEBUG LINES
+    std::cout << "EXPRESSION()" << std::endl;
+    print_token_mem(t);
 
     while(true) {    
         switch(t.kind) {
@@ -191,7 +232,7 @@ double expression()
             t = ts.get();
             break;
         case '-':
-            left += term();    // evaluate Term and subtract
+            left -= term();    // evaluate Term and subtract
             t = ts.get();
             break;
         default: 
@@ -202,28 +243,56 @@ double expression()
 }
 
 //------------------------------------------------------------------------------
+//print a token's members for debugging
+void print_token_mem(Token t)
+{
+    std::cout << "Token kind: " << t.kind << std::endl;
+    std::cout << "Token value: " << t.value << std::endl;
+    std::cout << std::endl;
+}
 
 int main()
 try
 {
-    while (cin) {
-        Token t = ts.get();
+    std::cout << "Welcome to our simple calculator." << std::endl;
+    std::cout << "Please enter expressions using floating-point numbers." << std::endl;
+    std::cout << "Available operations: (...), *, /, +, -" << std::endl;
+    std::cout << "print by ending your input with \"=\"" << std::endl;
+    std::cout << "exit by ending with an \"x\"" << std::endl;
 
-        if (t.kind == 'q') break; // 'q' for quit
-        if (t.kind == ';')        // ';' for "print now"
-            cout << "=" << t.value << '\n';
+    double result {0};
+    while (cin) 
+    {
+        Token t = ts.get();
+        std::cout << "MAIN()" << std::endl;
+        print_token_mem(t); //DEBUG
+
+        if (t.kind == 'q') 
+        {
+            break; // 'q' for quit
+        }
+        if (t.kind == '=')      // '=' for "print now"
+        {
+            //cout << "=" << t.value << '\n';
+            cout << "=" << result << '\n';
+        }
         else
+        {
             ts.putback(t);
-        t.value = expression();
+        }
+        //t.value = expression();
+        result = expression();
     }
 	keep_window_open();
 }
-catch (exception& e) {
+catch (exception& e) 
+{
     cerr << "error: " << e.what() << '\n'; 
 	keep_window_open();
     return 1;
 }
-catch (...) {
+catch (...) 
+{
     cerr << "Oops: unknown exception!\n"; 
 	keep_window_open();
     return 2;
