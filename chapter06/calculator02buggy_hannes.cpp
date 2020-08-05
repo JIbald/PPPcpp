@@ -115,7 +115,9 @@ Token Token_stream::get()
         default:
             std::cout << "GET()" << std::endl;
             error("Bad token");
+            return Token('R', -1000);
     }
+    return Token('R', -1000);
 }
 
 //------------------------------------------------------------------------------
@@ -153,7 +155,9 @@ double primary()
         return t.value;  // return the number's value
     default:
         error("primary expected");
+        return -1000;
     }
+    return -1000;
 }
 
 //------------------------------------------------------------------------------
@@ -239,6 +243,12 @@ void print_token_mem(Token t)
 int main()
 try
 {
+    std::cout << "Welcome to our simple calculator." << std::endl;
+    std::cout << "Please enter expressions using floating-point numbers." << std::endl;
+    std::cout << "Available operations: (...), *, /, +, -" << std::endl;
+    std::cout << "print by ending your input with \"=\"" << std::endl;
+    std::cout << "exit by ending with an \"x\"" << std::endl;
+
     double result {0};
     while (cin) 
     {
