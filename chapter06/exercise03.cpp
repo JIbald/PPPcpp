@@ -91,7 +91,7 @@ Token Token_stream::get()
     {
         case '=':    // for "print"
         case 'x':    // for "quit"
-        case '{': case '}': case '(': case ')': case '+': case '-': case '*': case '/': 
+        case '{': case '}': case '(': case ')': case '+': case '-': case '*': case '/': case '!': //!
         {
             Token t_symbol{ ch };
             //DEBUG LINES
@@ -144,33 +144,40 @@ double primary()
     std::cout << "PRIMARY()" << std::endl;
     print_token_mem(t);
 
-    switch (t.kind) {
-    case '{':   // handle '{' expression '}'
+    switch (t.kind) 
     {
-        double d {expression()};
-        t = ts.get();
-        if (t.kind != '}')
+        case '!':
         {
-            error("'}' expected");
+            int x {factorial( static_cast<int>( expression() ) )};
+            t = ts.get();
+            return x;
         }
-        return d;
-        
-    }
-    case '(':    // handle '(' expression ')'
-    {    
-        double d = expression();
-        t = ts.get();
-        if (t.kind != ')') 
+        case '{':   // handle '{' expression '}'
         {
-            error("')' expected"); // might need "no expression within parenthesis, empty ()"
+            double d {expression()};
+            t = ts.get();
+            if (t.kind != '}')
+            {
+                error("'}' expected");
+            }
+            return d;
+            
         }
-        return d;
-    }
-    case '#':            // we use '#' to represent a number
-        return t.value;  // return the number's value
-    default:
-        error("primary expected");
-        return -1000;
+        case '(':    // handle '(' expression ')'
+        {    
+            double d = expression();
+            t = ts.get();
+            if (t.kind != ')') 
+            {
+                error("')' expected"); // might need "no expression within parenthesis, empty ()"
+            }
+            return d;
+        }
+        case '#':            // we use '#' to represent a number
+            return t.value;  // return the number's value
+        default:
+            error("primary expected");
+            return -1000;
     }
     return -1000;
 }
