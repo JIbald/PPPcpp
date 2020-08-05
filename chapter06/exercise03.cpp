@@ -146,12 +146,6 @@ double primary()
 
     switch (t.kind) 
     {
-        case '!':
-        {
-            int x {factorial( static_cast<int>( expression() ) )};
-            t = ts.get();
-            return x;
-        }
         case '{':   // handle '{' expression '}'
         {
             double d {expression()};
@@ -184,10 +178,29 @@ double primary()
 
 //------------------------------------------------------------------------------
 
+double secondary()
+{
+    double left = primary();
+    Token t = ts.get();
+
+    switch ( t.kind )
+    {
+        case '!':   //!
+        {
+            return factorial(left);
+        }
+        default:
+        {
+            ts.putback(t);
+            return left;
+        }
+    }
+}
+
 // deal with *, /, and %
 double term()
 {
-    double left = primary();
+    double left = secondary();
     std::cout << "LEFT: " << left << std::endl;
     Token t = ts.get();        // get the next token from token stream
     
@@ -199,14 +212,14 @@ double term()
         switch (t.kind) {
         case '*':
         {
-            left *= primary();
+            left *= secondary();
             t = ts.get();
             // originally no break
             break;
         }
         case '/':
         {    
-            double d = primary();
+            double d = secondary();
             if (d == 0) 
             {
                 error("divide by zero");
@@ -313,6 +326,12 @@ catch (...)
 
 int factorial (int num)
 {
+    //pre directive:
+    if (num < 0)
+    {
+        error("negative number invoked factorial()");
+    }
+    
     int sum {1};
     for ( int i = num; i >= 1; --i )
     {
