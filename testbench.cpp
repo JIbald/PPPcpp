@@ -1,15 +1,30 @@
 #include "std_lib_facilities.h"
 
-vector <std::string> conjunctions {"and", "or", "but"};
+vector <std::string> articles {"the", "a"};
 vector <std::string> nouns {"birds", "fish", "C++"};
 vector <std::string> verbs {"rules", "fly", "swim"};
-vector <std::string> articles {"the", "a"};
+vector <std::string> conjunctions {"and", "or", "but"};
 
-bool is_conjunction ( std::string word )
+void display_str_vec ( vector <std::string> vec )
 {
-    for (int i = 0; i < conjunctions.size(); ++i)
+    if ( vec.empty() )
     {
-        if ( conjunctions[i] == word )
+        std::cout << "EMPTY VECTOR" << std::endl;
+    }
+    else
+    {
+        for (std::string i : vec)
+        {
+            std::cout << i << std::endl;
+        }
+    }
+}
+
+bool is_article ( std::string word )
+{
+    for (int i = 0; i < articles.size(); ++i)
+    {
+        if ( articles[i] == word )
         {
             return true;
         }
@@ -26,6 +41,7 @@ bool is_noun ( std::string word )
             return true;
         }
     }
+    error("noun not in databank");
     return false;
 }
 
@@ -38,34 +54,60 @@ bool is_verb ( std::string word )
             return true;
         }
     }
+    error("verb not in databank");
     return false;
 }
 
-bool is_article ( std::string word )
+bool is_conjunction ( std::string word )
 {
-    for (int i = 0; i < articles.size(); ++i)
+    for (int i = 0; i < conjunctions.size(); ++i)
     {
-        if ( articles[i] == word )
+        if ( conjunctions[i] == word )
         {
             return true;
         }
     }
+    error("conjunction not in databank");
     return false;
+}
+
+bool is_anv()
+{
+    string str0;
+    std::cin >> str0;
+    string str1;
+    std::cin >> str1;
+
+    //starts with article
+    if ( is_article(str0) && is_noun(str1))
+    {
+        string str2;
+        std::cin >> str2;
+        if ( !is_verb(str2) )
+        {
+            return false;
+        }
+        return true;
+    }
+    //starts without article
+    else if ( is_noun(str0) )
+    {
+        if ( !is_verb(str1) )
+        {
+            return false;
+        }
+        return true;
+    }
+    //starts with neither
+    else
+    {
+        return false;
+    }
 }
 
 int main()
 {
-    std::string sentence {""};
-    std::cin >> sentence;
-    std::cout << "your input: " << sentence << std::endl;
-    if ( is_article(sentence) )
-    {
-        std::cout << "works" << std::endl;
-    }
-    else
-    {
-        std::cout << "fails" << std::endl;
-    }
     
+
     return 0;
 }
