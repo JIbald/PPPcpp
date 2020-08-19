@@ -1,9 +1,24 @@
-#include "std_lib_facilities.h"
+#include "../std_lib_facilities.h"
 
 vector <std::string> conjunctions {"and", "or", "but"};
 vector <std::string> nouns {"birds", "fish", "C++"};
 vector <std::string> verbs {"rules", "fly", "swim"};
 vector <std::string> articles {"the", "a"};
+
+void display_str_vec ( vector <std::string> vec )
+{
+    if ( vec.empty() )
+    {
+        std::cout << "EMPTY VECTOR" << std::endl;
+    }
+    else
+    {
+        for (std::string i : vec)
+        {
+            std::cout << i << std::endl;
+        }
+    }
+}
 
 bool is_conjunction ( std::string word )
 {
@@ -14,6 +29,7 @@ bool is_conjunction ( std::string word )
             return true;
         }
     }
+    error("conjunction not in databank");
     return false;
 }
 
@@ -26,6 +42,7 @@ bool is_noun ( std::string word )
             return true;
         }
     }
+    error("noun not in databank");
     return false;
 }
 
@@ -38,6 +55,7 @@ bool is_verb ( std::string word )
             return true;
         }
     }
+    error("verb not in databank");
     return false;
 }
 
@@ -54,18 +72,27 @@ bool is_article ( std::string word )
 }
 
 int main()
+try
 {
-    std::string sentence {""};
-    std::cin >> sentence;
-    std::cout << "your input: " << sentence << std::endl;
-    if ( is_article(sentence) )
+    std::string sentence {" "};
+    vector <std::string> input {};
+    while (std::cin >> sentence)
     {
-        std::cout << "works" << std::endl;
-    }
-    else
-    {
-        std::cout << "fails" << std::endl;
+        input.push_back(sentence);
     }
     
+    display_str_vec(input);
     return 0;
+}
+catch (exception& e)
+{
+    cerr << "error: " << e.what() << '\n';
+    keep_window_open();
+    return 1;
+}
+catch (...)
+{
+    cerr << "Oops: unknown exception!\n";
+    keep_window_open();
+    return 2;
 }
