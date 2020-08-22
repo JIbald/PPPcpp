@@ -1,6 +1,7 @@
 #include "../std_lib_facilities.h"
 #include <iomanip>
 
+//global vectors for our word library
 vector <std::string> articles {"the", "a"};
 vector <std::string> nouns {"birds", "fish", "C++"};
 vector <std::string> verbs {"rules", "fly", "swim"};
