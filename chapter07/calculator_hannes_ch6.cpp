@@ -17,6 +17,7 @@
 */
 
 #include "../std_lib_facilities.h"
+#include <cmath>
 
 //------------------------------------------------------------------------------
 
@@ -89,8 +90,9 @@ Token Token_stream::get()
 
     switch (ch) 
     {
-        case '=':    // for "print"
-        case 'x':    // for "quit"
+        case '=':   // for "print"
+        case 'x':   // for "quit"
+        case ',':   // for multiple entries
         case '{': case '}': case '(': case ')': case '+': case '-': case '*': case '/': case '!': //!
         {
             Token t_symbol{ ch };
@@ -117,7 +119,7 @@ Token Token_stream::get()
             return t_number;   // let '#' represent "a number"
         }
         default:
-            std::cout << "GET()" << std::endl;
+            //std::cout << "GET() default case" << std::endl;
             error("Bad token");
             return Token('R', -1000);
     }
@@ -232,6 +234,18 @@ double term()
             t = ts.get();
             break;
         }
+        //TODO: not properly tested
+        case '%':
+        {
+            double d = primary();
+            if (d == 0)
+            {
+                error("%: divide by zero");
+            }
+            left = fmod(left,d);
+            t = ts.get();
+            break;
+        }
         default: 
             ts.putback(t);     // put t back into the token stream
             return left;
@@ -306,42 +320,50 @@ try
     double result {0};
     while (cin) 
     {
+        std::cout << ">";
         Token t = ts.get();
 
         //DEBUG lines
         //std::cout << "MAIN()" << std::endl;
         //print_token_mem(t); //DEBUG
-
+        while (t.kind == ';')
+        {
+            t = ts.get();
+        }
         if (t.kind == 'q') 
         {
-            break; // 'q' for quit
+            keep_window_open();
+            return 0; // 'q' for quit
         }
-        if (t.kind == '=')      // '=' for "print now"
-        {
-            //cout << "=" << t.value << '\n';
-            cout << "=" << result << '\n';
-        }
-        else
-        {
-            ts.putback(t);
-        }
+
+        //from last chapter instead of lines below
+        // if (t.kind == '=')      // '=' for "print now"
+        // {
+        //     //cout << "=" << t.value << '\n';
+        //     std::cout << "=" << result << '\n';
+        // }
+        // else
+        // {
+        //     ts.putback(t);
+        // }
         //t.value = expression();
+
+        ts.putback(t);
         result = expression();
+        std::cout << "= " << result << '\n';
     }
 	keep_window_open();
+    return 0;
 }
 catch (exception& e) 
 {
     cerr << "error: " << e.what() << '\n'; 
-	keep_window_open();
+	keep_window_open("~~");
     return 1;
 }
 catch (...) 
 {
     cerr << "Oops: unknown exception!\n"; 
-	keep_window_open();
+	keep_window_open("~~");
     return 2;
 }
-
-//------------------------------------------------------------------------------
-
