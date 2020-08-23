@@ -1,7 +1,28 @@
-#include "../std_lib_facilities.h"
-
-int main()
-{
-
-    return 0;
-}
+// Expression:
+//      Term
+//      Expression "|" Term
+// 
+// Term:
+//      Primary
+//      Term "^"
+// 
+// Primary:
+//      Parentheses
+//      Term "&"
+//
+// Paretheses:
+//      Variable
+//      "(" Expression ")"
+// 
+// Variable 
+//      variable of a type
+// 
+// 
+// 
+// 
+// 
+// 
+// 
+// 
+// 
+// 
